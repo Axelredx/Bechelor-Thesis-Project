@@ -11,3 +11,4 @@ http://localhost:8000/docs
 # db
 mongosh --username admin --password password123 --authenticationDatabase admin
 mongodb://admin:password123@localhost:27017/admin
+mongodb://admin:password123@localhost:27017/test?authSource=admin
