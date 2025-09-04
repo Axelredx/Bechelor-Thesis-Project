@@ -1,0 +1,6 @@
+# avvia server
+source my_project/bin/activate
+uvicorn index:app --reload
+
+# aggiornare requirements
+pip freeze > requirements.txt
