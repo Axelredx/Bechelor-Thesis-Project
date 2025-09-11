@@ -2,6 +2,9 @@
 source my_project/bin/activate
 uvicorn main:app --reload
 
+# avvia frontend (dev)
+npm run dev
+
 # aggiornare requirements
 pip freeze > requirements.txt
 
