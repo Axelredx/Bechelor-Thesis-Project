@@ -1,11 +1,17 @@
 <script setup>
-import { RouterView } from 'vue-router'
+import { RouterView, RouterLink } from 'vue-router'
 </script>
 
 <template>
   <div id="app">
     <header class="app-header">
       <h1>Sistema di Caricamento File</h1>
+
+      <!-- Barra di navigazione -->
+      <nav class="navbar">
+        <RouterLink to="/" class="nav-link">Home</RouterLink>
+        <RouterLink to="/upload" class="nav-link">Carica File</RouterLink>
+      </nav>
     </header>
     
     <main>
@@ -34,12 +40,40 @@ body {
 
 .app-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 .app-header h1 {
   color: white;
   font-size: 2.5rem;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  margin-bottom: 15px;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.router-link-active {
+  background: rgba(255, 255, 255, 0.3);
 }
 </style>

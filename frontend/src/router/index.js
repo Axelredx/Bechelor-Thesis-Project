@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import FileUpload from '@/components/FileUpload.vue'
+import Home from '@/components/Home.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +8,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: FileUpload,
+      component: Home
+    },
+    {
+      path: '/upload',
+      name: 'file-upload',
+      component: FileUpload
     }
   ],
 })
