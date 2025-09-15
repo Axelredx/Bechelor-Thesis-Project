@@ -233,37 +233,6 @@ export default {
       </transition>
     </div>
 
-    <!-- Lista file caricati -->
-    <div class="files-section">
-      <div class="section-header">
-        <h3>📋 File Caricati</h3>
-      </div>
-
-      <div v-if="uploadedFiles.length === 0" class="no-files">
-        <div class="no-files-icon">📂</div>
-        <p>Nessun file caricato</p>
-        <small>I tuoi file caricati appariranno qui</small>
-      </div>
-      
-      <div v-else class="files-grid">
-        <transition-group name="file-item">
-          <div
-            v-for="file in uploadedFiles"
-            :key="file.filename"
-            class="file-card"
-          >
-            <div class="file-icon">📄</div>
-            <div class="file-details">
-              <h4 class="file-name">{{ file.filename }}</h4>
-              <div class="file-meta">
-                <span class="file-size">{{ formatFileSize(file.size) }}</span>
-                <span class="file-date">{{ formatDate(file.created) }}</span>
-              </div>
-            </div>
-          </div>
-        </transition-group>
-      </div>
-    </div>
   </div>
 </template>
 

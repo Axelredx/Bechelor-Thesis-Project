@@ -5,7 +5,6 @@ import { RouterView, RouterLink } from 'vue-router'
 <template>
   <div id="app">
     <header class="app-header">
-      <h1>Sistema di Caricamento File</h1>
 
       <!-- Barra di navigazione -->
       <nav class="navbar">

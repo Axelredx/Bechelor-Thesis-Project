@@ -12,26 +12,31 @@ export default {
       messageIdCounter: 0,
       exampleQuestions: [
         'Mostrami tutti i file PDF caricati',
-        'Quali sono i documenti più recenti?',
-        'Trova file che contengono "report"',
+        'Qual\'è il documento più recente?',
+        'Restituisci la media dei costi dei file caricati nell\'ultimo mese',
         'Elenca i file più grandi di 1MB'
-      ]
+      ],
+      isCategoryValid: true,
+      chatPlaceholder: ''
     }
   },
   
   mounted() {
-    this.$nextTick(() => {
-      this.focusInput()
-    })
+    this.fetchCategory()
+    this.computePlaceholder()
+  },
+
+  watch: {
+    isCategoryValid() {
+      this.computePlaceholder()
+    },
+    isLoading() {
+      this.computePlaceholder()
+    }
   },
   
   methods: {
-    focusInput() {
-      if (this.$refs.messageInput) {
-        this.$refs.messageInput.focus()
-      }
-    },
-    
+
     setExampleQuestion(question) {
       this.currentMessage = question
       this.focusInput()
@@ -51,7 +56,34 @@ export default {
         textarea.style.height = Math.min(textarea.scrollHeight, 150) + 'px'
       })
     },
-    
+
+    async fetchCategory() {
+        try {
+            const response = await axios.get(this.apiUrl + "/get-category")
+            const data = response.data
+
+            // se category vuota → disabilita
+            this.isCategoryValid = !!data.category?.trim()
+
+            // aggiorna il placeholder
+            this.computePlaceholder()
+        } catch (err) {
+            console.error("Errore nel recupero della categoria:", err)
+            this.isCategoryValid = false
+            this.computePlaceholder()
+        }
+    },
+
+    computePlaceholder() {
+        if (!this.isCategoryValid) {
+            this.chatPlaceholder = "Definisci la categoria dei documenti per abilitare l'assistente"
+        } else if (this.isLoading) {
+            this.chatPlaceholder = "Elaborazione in corso..."
+        } else {
+            this.chatPlaceholder = "Fai una domanda sui tuoi documenti..."
+        }
+    },
+
     async sendMessage() {
       if (!this.currentMessage.trim() || this.isLoading) return
       
@@ -159,7 +191,7 @@ export default {
 <template>
   <div class="home-container">
     <!-- Header della chat -->
-    <div class="chat-header">
+    <div class="chat-header" ref="chatHeader">
       <div class="header-content">
         <div class="assistant-info">
           <div class="assistant-avatar">
@@ -190,15 +222,7 @@ export default {
       <!-- Messaggio di benvenuto -->
       <div v-if="messages.length === 0" class="welcome-message">
         <div class="welcome-content">
-          <div class="welcome-icon">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="currentColor" opacity="0.1"/>
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" fill="none"/>
-              <circle cx="9" cy="10" r="1" fill="currentColor"/>
-              <circle cx="15" cy="10" r="1" fill="currentColor"/>
-              <path d="M9 14s1 1 3 1 3-1 3-1" stroke="currentColor" stroke-width="2" fill="none"/>
-            </svg>
-          </div>
+
           <h2>Benvenuto in DocBot</h2>
           <p>Inizia una conversazione facendo una domanda sui tuoi documenti caricati.</p>
           
@@ -341,7 +365,7 @@ export default {
           <textarea
             v-model="currentMessage"
             ref="messageInput"
-            placeholder="Fai una domanda sui tuoi documenti..."
+            :placeholder="chatPlaceholder"
             :disabled="isLoading"
             @keydown="handleKeydown"
             rows="1"
@@ -350,7 +374,7 @@ export default {
           
           <button
             type="submit"
-            :disabled="!currentMessage.trim() || isLoading"
+            :disabled="!currentMessage.trim() || isLoading || !isCategoryValid"
             class="send-button"
           >
             <svg v-if="!isLoading" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
