@@ -110,6 +110,42 @@ export default {
         }
     },
 
+    async downloadFile(fileId, filename) {
+      try {
+        const response = await axios.get(`${this.apiUrl}/download-file/${fileId}`, {
+          responseType: 'blob'
+        })
+        
+        // Crea un URL per il blob
+        const blob = new Blob([response.data])
+        const url = window.URL.createObjectURL(blob)
+        
+        // Crea un elemento <a> temporaneo per il download
+        const link = document.createElement('a')
+        link.href = url
+        link.download = filename
+        document.body.appendChild(link)
+        link.click()
+        
+        // Pulisci
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+        
+      } catch (error) {
+        console.error('Errore durante il download:', error)
+        // Mostra un messaggio di errore all'utente
+        const errorMessage = {
+          id: this.messageIdCounter++,
+          type: 'assistant',
+          text: 'Errore Download',
+          result: `Impossibile scaricare il file: ${error.response?.data || 'Errore sconosciuto'}`,
+          timestamp: new Date()
+        }
+        this.messages.push(errorMessage)
+        this.scrollToBottom()
+      }
+    },
+
     async sendMessage() {
       if (!this.currentMessage.trim() || this.isLoading) return
       
@@ -174,6 +210,14 @@ export default {
     clearChat() {
       this.messages = []
       this.focusInput()
+    },
+    
+    focusInput() {
+      this.$nextTick(() => {
+        if (this.$refs.messageInput) {
+          this.$refs.messageInput.focus()
+        }
+      })
     },
     
     scrollToBottom() {
@@ -337,10 +381,22 @@ export default {
                           <div class="file-info">
                             <h5>{{ file.filename }}</h5>
                             <div class="file-meta">
-                              <span v-if="file.size">{{ formatFileSize(file.size) }}</span>
-                              <span v-if="file.created">{{ formatDate(file.created) }}</span>
+                              <span v-if="file.file_size">{{ formatFileSize(file.file_size) }}</span>
+                              <span v-if="file.upload_date">{{ formatDate(file.upload_date) }}</span>
                             </div>
                           </div>
+                          <button
+                            v-if="file.id"
+                            @click="downloadFile(file.id, file.filename)"
+                            class="download-btn"
+                            title="Scarica file"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                              <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                              <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -735,6 +791,27 @@ export default {
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
 }
 
+.download-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.download-btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
 .file-icon {
   font-size: 24px;
   opacity: 0.7;
@@ -1062,6 +1139,11 @@ kbd {
     width: 32px;
     height: 32px;
   }
+  
+  .download-btn {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 /* Scrollbar personalizzata per l'area messaggi */
@@ -1085,7 +1167,8 @@ kbd {
 /* Focus states migliorati */
 .example-btn:focus,
 .action-btn:focus,
-.send-button:focus {
+.send-button:focus,
+.download-btn:focus {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
@@ -1117,7 +1200,8 @@ kbd {
   .send-button,
   .action-btn,
   .example-btn,
-  .file-card {
+  .file-card,
+  .download-btn {
     transition: none;
   }
 }
@@ -1154,5 +1238,35 @@ kbd {
   .messages-container {
     overflow: visible;
   }
+  
+  .download-btn {
+    display: none;
+  }
+}
+
+/* Accessibilità per screen readers */
+.download-btn[aria-label] {
+  position: relative;
+}
+
+/* Stato hover per i file cards migliorato */
+.file-card:hover .download-btn {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+/* Miglioramento visivo per file senza download */
+.file-card:not(:has(.download-btn)) {
+  opacity: 0.8;
+}
+
+/* Loading state per il download */
+.download-btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.download-btn.loading svg {
+  animation: spin 1s linear infinite;
 }
 </style>
