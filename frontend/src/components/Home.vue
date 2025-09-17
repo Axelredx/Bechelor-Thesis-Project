@@ -17,12 +17,14 @@ export default {
         'Elenca i file più grandi di 1MB'
       ],
       isCategoryValid: true,
+      docsInDb: true,
       chatPlaceholder: ''
     }
   },
   
   mounted() {
     this.fetchCategory()
+    this.checkDocs()
     this.computePlaceholder()
   },
 
@@ -31,6 +33,9 @@ export default {
       this.computePlaceholder()
     },
     isLoading() {
+      this.computePlaceholder()
+    },
+    docsInDb() {
       this.computePlaceholder()
     }
   },
@@ -74,11 +79,32 @@ export default {
         }
     },
 
+    async checkDocs() {
+      try {
+          const response = await axios.get(this.apiUrl + "/count-docs")
+          const count = response.data.result 
+
+          if (count === 0) {
+              this.docsInDb = false
+          } else {
+              this.docsInDb = true
+          }
+
+          this.computePlaceholder()
+        } catch (err) {
+            console.error("Errore nel recupero count dei documenti:", err)
+            this.docsInDb = false
+            this.computePlaceholder()
+        }
+    },  
+
     computePlaceholder() {
         if (!this.isCategoryValid) {
             this.chatPlaceholder = "Definisci la categoria dei documenti per abilitare l'assistente"
         } else if (this.isLoading) {
             this.chatPlaceholder = "Elaborazione in corso..."
+        } else if (!this.docsInDb) {
+            this.chatPlaceholder = "Carica dei documenti nella sezione /upload per iniziare a fare domande"
         } else {
             this.chatPlaceholder = "Fai una domanda sui tuoi documenti..."
         }
