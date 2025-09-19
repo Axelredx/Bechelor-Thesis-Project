@@ -4,16 +4,12 @@ import { RouterView, RouterLink } from 'vue-router'
 
 <template>
   <div id="app">
-    <header class="app-header">
-
-      <!-- Barra di navigazione -->
-      <nav class="navbar">
-        <RouterLink to="/" class="nav-link">Home</RouterLink>
-        <RouterLink to="/upload" class="nav-link">Upload</RouterLink>
-      </nav>
+    <header class="topbar">
+      <RouterLink to="/" class="nav-link">Home</RouterLink>
+      <RouterLink to="/upload" class="nav-link">Upload</RouterLink>
     </header>
-    
-    <main>
+
+    <main class="main-content">
       <RouterView />
     </main>
   </div>
@@ -26,53 +22,41 @@ import { RouterView, RouterLink } from 'vue-router'
   box-sizing: border-box;
 }
 
-body {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+html, body, #app {
+  height: 100%;
+  width: 100%;
+  font-family: system-ui, sans-serif;
+  background: #343541; 
+  color: #fff;
 }
 
-#app {
-  min-height: 100vh;
-  padding: 20px;
-}
-
-.app-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.app-header h1 {
-  color: white;
-  font-size: 2.5rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-  margin-bottom: 15px;
-}
-
-/* Navbar */
-.navbar {
+/* Topbar */
+.topbar {
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 30px;
+  align-items: center;
+  gap: 8px;
+  background: #202123;
+  padding: 6px 12px;   
+  height: 40px;        
+  border-bottom: 1px solid #2a2b32;
 }
 
 .nav-link {
-  color: white;
+  color: #fff;
   text-decoration: none;
-  font-size: 1.1rem;
-  font-weight: bold;
-  padding: 8px 14px;
-  border-radius: 8px;
-  transition: background 0.3s, transform 0.2s;
-}
-
-.nav-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
+  font-size: 0.9rem;   
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .router-link-active {
-  background: rgba(255, 255, 255, 0.3);
+  background: #343541;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
 }
 </style>
+
