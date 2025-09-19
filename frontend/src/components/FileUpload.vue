@@ -59,7 +59,9 @@ const formatFileSize = (bytes) => {
     <input type="file" ref="fileInput" @change="handleFileSelect" hidden />
 
     <div class="drop-zone" @click="triggerFileInput">
-      <p v-if="!selectedFile">Clicca o trascina il file qui</p>
+      <p v-if="!selectedFile">Clicca qui per caricare un file!</p>
+      <p v-if="!selectedFile">Formati supportati: [pdf, msg, eml, xls, xlsx, xlsm, xlsb, odf, ods, odt,
+                                jpg, jpeg, png, gif, docx, csv, txt, text]</p>
       <p v-else>{{ selectedFile.name }} ({{ formatFileSize(selectedFile.size) }})</p>
     </div>
 
