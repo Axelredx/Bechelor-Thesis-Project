@@ -30,7 +30,7 @@ const showStatus = (message, type = 'success') => {
   setTimeout(clearStatus, 5000)
 }
 
-// --- Fetch categorie attuali ---
+// --- Fetch categorie (in db) ---
 const fetchCurrentCategory = async () => {
   isFetchingCurrent.value = true
   try {
@@ -46,7 +46,6 @@ const fetchCurrentCategory = async () => {
   }
 }
 
-// --- Category API ---
 const createCategory = async () => {
   if (!categoryInput.value.trim()) return
   isLoading.value = true
@@ -110,7 +109,7 @@ const deleteAllCategories = async () => {
   }
 }
 
-// --- Delete documents via NLP ---
+// --- Delete documents via user NLP ---
 const deleteDocuments = async () => {
   if (!nlpInput.value.trim()) return
   isLoading.value = true
@@ -128,7 +127,6 @@ const deleteDocuments = async () => {
   }
 }
 
-// --- Lifecycle ---
 onMounted(() => fetchCurrentCategory())
 watchEffect(() => {
   if (createdCategory.value || currentCategory.value) {
@@ -149,6 +147,9 @@ watchEffect(() => {
       {{ currentDescription || 'Nessuna categoria ancora definita' }}
     </div>
 
+    <div v-if="statusMessage" :class="['status', statusType]">
+      {{ statusMessage }}
+    </div>
 
     <!-- Delete documents NLP -->
     <div class="nlp-delete">
@@ -177,10 +178,6 @@ watchEffect(() => {
       <button @click="deleteAllCategories" :disabled="isLoading" class="delete-btn">
         Elimina tutte le categorie
       </button>
-    </div>
-
-    <div v-if="statusMessage" :class="['status', statusType]">
-      {{ statusMessage }}
     </div>
 
     <div v-if="createdCategory" class="result">

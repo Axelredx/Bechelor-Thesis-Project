@@ -1,6 +1,9 @@
 <script setup>
 import { ref, reactive, computed, onMounted, watch, nextTick } from 'vue'
 import axios from 'axios'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const currentMessage = ref('')
 const messages = reactive([])
@@ -10,9 +13,8 @@ const apiUrl = 'http://localhost:8000'
 
 const exampleQuestions = [
   'Mostrami tutti i file PDF caricati',
-  'Qual\'è il documento più recente?',
-  'Restituisci la media dei costi dei file caricati nell\'ultimo mese',
-  'Elenca i file più grandi di 1MB'
+  'Qual\'è il documento più recente che ti ho caricato?',
+  'Restituisci la media dei costi dei file caricati nell\'ultimo mese'
 ]
 
 const isCategoryValid = ref(true)
@@ -20,6 +22,7 @@ const docsInDb = ref(true)
 const chatPlaceholder = ref('')
 
 const messageInput = ref(null)
+const sendBtn = ref(null)
 const messagesContainer = ref(null)
 
 const isSendDisabled = computed(() => !currentMessage.value.trim() || 
@@ -43,6 +46,7 @@ const setExampleQuestion = (question) => {
 }
 
 const handleKeydown = (event) => {
+  // use ENTER to send
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault()
     sendMessage()
@@ -90,10 +94,6 @@ const computePlaceholder = () => {
   } else {
     chatPlaceholder.value = "Fai una domanda sui tuoi documenti..."
   }
-}
-
-const focusInput = () => {
-  nextTick(() => messageInput.value?.focus())
 }
 
 const scrollToBottom = () => {
@@ -161,7 +161,7 @@ const sendMessage = async () => {
       id: messageIdCounter.value++,
       type: 'assistant',
       text: data.message,
-      query: data.query, // <-- query SQL o API mostrata
+      query: data.query, 
       result: resultData,
       timestamp: new Date()
     })
@@ -177,9 +177,8 @@ const sendMessage = async () => {
   } finally {
     isLoading.value = false
     scrollToBottom()
-    focusInput()
   }
-}
+ }
 
 onMounted(() => {
   fetchCategory()
@@ -198,7 +197,6 @@ watch([isCategoryValid, isLoading, docsInDb], computePlaceholder)
         <div class="chat-bubble">
           <div class="msg-text">{{ msg.text }}</div>
 
-          <!-- Se è un array di file -->
           <div v-if="Array.isArray(msg.result) && msg.result.length" class="msg-result">
             <div v-for="file in msg.result" :key="file.filename" class="file-item">
               <span>{{ file.display }}</span>
@@ -206,12 +204,8 @@ watch([isCategoryValid, isLoading, docsInDb], computePlaceholder)
             </div>
           </div>
 
-          <!-- Se è testo -->
           <div v-else-if="msg.result" class="msg-result">{{ msg.result }}</div>
-
-          <!-- Query SQL / API -->
           <pre v-if="msg.query" class="msg-query">Query elaborata: {{ msg.query }}</pre>
-
           <small class="msg-time">{{ formatTime(msg.timestamp) }}</small>
         </div>
       </div>
@@ -231,16 +225,18 @@ watch([isCategoryValid, isLoading, docsInDb], computePlaceholder)
 
     <!-- Input -->
     <div class="chat-input">
-      <textarea
-        ref="messageInput"
-        v-model="currentMessage"
-        :placeholder="chatPlaceholder"
-        @keydown="handleKeydown"
+      <textarea ref="messageInput" v-model="currentMessage"
+        :placeholder="chatPlaceholder" @keydown="handleKeydown"
       ></textarea>
-      <button @click="sendMessage" :disabled="isSendDisabled">Invia</button>
+      <button 
+        ref="sendBtn" @click="sendMessage" 
+        :disabled="isSendDisabled">
+        Invia
+      </button>
     </div>
   </div>
 </template>
+
 
 <style >
 :root {
