@@ -6,7 +6,8 @@ import { RouterView, RouterLink } from 'vue-router'
   <div id="app">
     <header class="topbar">
       <RouterLink to="/" class="nav-link">Home</RouterLink>
-      <RouterLink to="/upload" class="nav-link">Upload</RouterLink>
+      <RouterLink to="/upload" class="nav-link">Upload File</RouterLink>
+      <RouterLink to="/settings" class="nav-link">Settings</RouterLink>
     </header>
 
     <main class="main-content">
@@ -26,7 +27,7 @@ html, body, #app {
   height: 100%;
   width: 100%;
   font-family: system-ui, sans-serif;
-  background: #343541; 
+  background: #202123; 
   color: #fff;
 }
 
