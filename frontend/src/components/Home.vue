@@ -203,30 +203,20 @@ watch([isCategoryValid, isLoading, docsInDb], computePlaceholder)
   <div class="chat-wrapper">
     <!-- Messaggi -->
     <div class="chat-messages" ref="messagesContainer">
-      <div 
-        v-for="msg in messages" 
-        :key="msg.id"
-        :class="['chat-msg', msg.type]"
-      >
+      <div v-for="msg in messages" :key="msg.id" :class="['chat-msg', msg.type]">
         <div class="chat-bubble">
-          <div class="msg-text">Risultato: {{ msg.text }}</div>
+          <div class="msg-text">{{ msg.text }}</div>
 
           <!-- Se è un array di file -->
           <div v-if="Array.isArray(msg.result) && msg.result.length" class="msg-result">
-            <div 
-              v-for="file in msg.result" 
-              :key="file.filename"
-              class="file-item"
-            >
+            <div v-for="file in msg.result" :key="file.filename" class="file-item">
               <span>{{ file.display }}</span>
-              <button v-if="file.id" @click="downloadFile(file.id,file.filename)"> Scarica File </button>
+              <button v-if="file.id" @click="downloadFile(file.id,file.filename)">Scarica File</button>
             </div>
           </div>
 
           <!-- Se è testo -->
-          <div v-else-if="msg.result" class="msg-result">
-            {{ msg.result }}
-          </div>
+          <div v-else-if="msg.result" class="msg-result">{{ msg.result }}</div>
 
           <!-- Query SQL / API -->
           <pre v-if="msg.query" class="msg-query">Query elaborata: {{ msg.query }}</pre>
@@ -239,15 +229,10 @@ watch([isCategoryValid, isLoading, docsInDb], computePlaceholder)
     </div>
 
     <!-- Example Questions -->
-    <div v-if="docsInDb && isCategoryValid && exampleQuestions.length" 
-      class="example-questions">
+    <div v-if="docsInDb && isCategoryValid && exampleQuestions.length" class="example-questions">
       <p>Prova a chiedere:</p>
       <div class="examples-list">
-        <button 
-          v-for="(q, i) in exampleQuestions" 
-          :key="i" 
-          @click="setExampleQuestion(q)"
-        >
+        <button v-for="(q, i) in exampleQuestions" :key="i" @click="setExampleQuestion(q)">
           {{ q }}
         </button>
       </div>
@@ -266,159 +251,111 @@ watch([isCategoryValid, isLoading, docsInDb], computePlaceholder)
   </div>
 </template>
 
-<style scoped>
-.chat-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background: #202123;
-  color: #fff;
+<style >
+:root {
+  --bg-main: #202123;
+  --bg-msg: #444654;
+  --bg-user: #0d6efd;
+  --bg-query: #2a2b35;
+  --bg-examples: #343541;
+  --bg-button: #40414f;
+  --bg-button-hover: #4a4b57;
+  --color-text: #fff;
+  --color-secondary: #e5e5e5;
+  --color-meta: #b3b3b3;
+  --color-muted: #aaa;
 }
 
-/* Messaggi */
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
+.chat-wrapper { 
+  display:flex; 
+  flex-direction:column; 
+  height:100vh; 
+  background:var(--bg-main); 
+  color:var(--color-text); 
 }
 
-.msg-query {
-  background: #2a2b35;
-  color: #cfcfcf;
-  font-size: 0.75rem;
-  padding: 6px 8px;
-  margin-top: 6px;
-  border-radius: 4px;
-  white-space: pre-wrap;
-  word-break: break-word;
+.chat-messages { 
+  flex:1; 
+  overflow-y:auto; 
+  padding:20px; 
 }
 
-.chat-msg {
-  margin-bottom: 16px;
-  display: flex;
+.chat-msg { 
+  display:flex; 
+  margin-bottom:16px; 
 }
 
-.chat-msg.user {
-  justify-content: flex-end;
-}
+.chat-msg.user { justify-content:flex-end; }
 
 .chat-bubble {
-  max-width: 70%;
-  padding: 12px;
-  border-radius: 8px;
-  line-height: 1.4;
-  word-wrap: break-word;
-  background: #444654;
-  color: #e5e5e5;
+  max-width:70%; padding:12px; border-radius:8px; line-height:1.4; word-wrap:break-word;
+  background:var(--bg-msg); color:var(--color-secondary);
 }
 
-.chat-msg.user .chat-bubble {
-  background: #0d6efd;
-  color: #fff;
+.chat-msg.user .chat-bubble { 
+  background:var(--bg-user); 
+  color:var(--color-text); 
 }
 
-.msg-result {
-  margin-top: 8px;
-  font-size: 0.85rem;
-  color: #b3b3b3;
-}
+.msg-result { margin-top:8px; font-size:0.85rem; color:var(--color-meta); }
 
-.msg-result .file-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
+.msg-result .file-item { 
+  display:flex; 
+  justify-content:space-between; 
+  margin-bottom:4px; 
 }
 
 .msg-result button {
-  background: #0d6efd;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 2px 6px;
-  cursor: pointer;
-  font-size: 0.75rem;
+  background:var(--bg-user); color:var(--color-text); border:none; border-radius:4px;
+  padding:2px 6px; cursor:pointer; font-size:0.75rem;
 }
 
-.msg-time {
-  display: block;
-  font-size: 0.7rem;
-  margin-top: 6px;
-  color: #aaa;
-  text-align: right;
+.msg-time { 
+  display:block; 
+  font-size:0.7rem; 
+  margin-top:6px; 
+  color:var(--color-muted); 
+  text-align:right; 
 }
 
-/* Example Questions */
+.msg-query {
+  background:var(--bg-query); color:#cfcfcf; font-size:0.75rem; padding:6px 8px;
+  margin-top:6px; border-radius:4px; white-space:pre-wrap; word-break:break-word;
+}
+
 .example-questions {
-  border-top: 1px solid #565869;
-  padding: 12px 16px;
-  background: #343541;
+  border-top:1px solid #565869; padding:12px 16px; background:var(--bg-examples);
 }
 
-.example-questions p {
-  font-size: 0.9rem;
-  margin-bottom: 8px;
-  color: #b3b3b3;
-}
+.example-questions p { font-size:0.9rem; margin-bottom:8px; color:var(--color-meta); }
 
-.examples-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+.examples-list { display:flex; flex-wrap:wrap; gap:8px; }
 
 .examples-list button {
-  background: #40414f;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  color: #e5e5e5;
-  font-size: 0.85rem;
-  cursor: pointer;
+  background:var(--bg-button); border:none; padding:6px 10px; border-radius:6px;
+  color:var(--color-secondary); font-size:0.85rem; cursor:pointer;
 }
 
-.examples-list button:hover {
-  background: #4a4b57;
-}
+.examples-list button:hover { background:var(--bg-button-hover); }
 
-/* Loading */
-.loading {
-  color: #aaa;
-  font-style: italic;
-  margin-top: 10px;
-}
+.loading { color:var(--color-muted); font-style:italic; margin-top:10px; }
 
-/* Input */
-.chat-input {
-  display: flex;
-  padding: 12px;
-  border-top: 1px solid #565869;
-  background: #343541;
+.chat-input { 
+  display:flex; 
+  padding:12px; 
+  border-top:1px solid #565869; 
+  background:var(--bg-examples); 
 }
 
 .chat-input textarea {
-  flex: 1;
-  resize: none;
-  padding: 10px;
-  border-radius: 6px;
-  border: none;
-  outline: none;
-  background: #40414f;
-  color: #fff;
-  font-size: 1rem;
+  flex:1; resize:none; padding:10px; border-radius:6px; border:none; outline:none;
+  background:#40414f; color:var(--color-text); font-size:1rem;
 }
 
 .chat-input button {
-  margin-left: 8px;
-  padding: 10px 16px;
-  background: #0d6efd;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  margin-left:8px; padding:10px 16px; background:var(--bg-user); color:var(--color-text);
+  border:none; border-radius:6px; cursor:pointer;
 }
 
-.chat-input button:disabled {
-  background: #666;
-  cursor: not-allowed;
-}
+.chat-input button:disabled { background:#666; cursor:not-allowed; }
 </style>
