@@ -2,7 +2,6 @@
 import { ref, reactive, computed, onMounted, watch, nextTick } from 'vue'
 import axios from 'axios'
 
-// --- Refs e reactive state ---
 const currentMessage = ref('')
 const messages = reactive([])
 const isLoading = ref(false)
@@ -20,12 +19,12 @@ const isCategoryValid = ref(true)
 const docsInDb = ref(true)
 const chatPlaceholder = ref('')
 
-// --- Refs per DOM ---
 const messageInput = ref(null)
 const messagesContainer = ref(null)
 
-// --- Computed ---
-const isSendDisabled = computed(() => !currentMessage.value.trim() || isLoading.value || !isCategoryValid.value)
+const isSendDisabled = computed(() => !currentMessage.value.trim() || 
+                                        isLoading.value || 
+                                        !isCategoryValid.value)
 
 // --- Helper functions ---
 const formatTime = (date) => date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
@@ -38,7 +37,6 @@ const formatFileSize = (bytes) => {
   return parseFloat((bytes/Math.pow(k,i)).toFixed(1)) + ' ' + sizes[i]
 }
 
-// --- Funzioni principali ---
 const setExampleQuestion = (question) => {
   currentMessage.value = question
   focusInput()
@@ -102,11 +100,6 @@ const scrollToBottom = () => {
   nextTick(() => {
     if (messagesContainer.value) messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
   })
-}
-
-const clearChat = () => {
-  messages.splice(0, messages.length)
-  focusInput()
 }
 
 const downloadFile = async (fileId, filename) => {
@@ -188,14 +181,12 @@ const sendMessage = async () => {
   }
 }
 
-// --- Lifecycle ---
 onMounted(() => {
   fetchCategory()
   checkDocs()
   computePlaceholder()
 })
 
-// --- Watchers ---
 watch([isCategoryValid, isLoading, docsInDb], computePlaceholder)
 </script>
 
