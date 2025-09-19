@@ -100,7 +100,7 @@ export default {
 
     computePlaceholder() {
         if (!this.isCategoryValid) {
-            this.chatPlaceholder = "Definisci la categoria dei documenti per abilitare l'assistente"
+            this.chatPlaceholder = "Definisci la categoria dei documenti nella sezione /settings per abilitare l'assistente"
         } else if (this.isLoading) {
             this.chatPlaceholder = "Elaborazione in corso..."
         } else if (!this.docsInDb) {
@@ -271,8 +271,8 @@ export default {
             </svg>
           </div>
           <div class="assistant-details">
-            <h3>DocBot Assistant</h3>
-            <p>Chiedimi qualsiasi cosa sui tuoi documenti</p>
+            <h3>AI Assistant</h3>
+            <p>Il tuo assistente personale per la gestione dei documenti</p>
           </div>
         </div>
         
@@ -293,7 +293,7 @@ export default {
       <div v-if="messages.length === 0" class="welcome-message">
         <div class="welcome-content">
 
-          <h2>Benvenuto in DocBot</h2>
+          <h2>Benvenuto!</h2>
           <p>Inizia una conversazione facendo una domanda sui tuoi documenti caricati.</p>
           
           <div class="example-questions">
@@ -345,7 +345,7 @@ export default {
               </div>
               <div class="message-text">
                 <div class="message-header">
-                  <span class="sender-name">DocBot</span>
+                  <span class="sender-name">AI</span>
                   <span class="message-time">{{ formatTime(message.timestamp) }}</span>
                 </div>
                 <div class="message-body">

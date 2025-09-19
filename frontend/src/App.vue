@@ -9,7 +9,7 @@ import { RouterView, RouterLink } from 'vue-router'
       <!-- Barra di navigazione -->
       <nav class="navbar">
         <RouterLink to="/" class="nav-link">Home</RouterLink>
-        <RouterLink to="/upload" class="nav-link">Carica File</RouterLink>
+        <RouterLink to="/upload" class="nav-link">Upload</RouterLink>
       </nav>
     </header>
     
