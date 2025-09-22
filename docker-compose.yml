@@ -1,6 +1,21 @@
 version: "3.9"
 
 services:
+  mongodb:
+    image: mongo:6.0
+    container_name: my_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: test
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
   backend:
     build: ./backend
     container_name: backend
@@ -24,21 +39,6 @@ services:
       - "8080:80"
     depends_on:
       - backend
-    networks:
-      - app-network
-
-  mongodb:
-    image: mongo:6.0
-    container_name: my_mongodb
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password123
-      MONGO_INITDB_DATABASE: test
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
     networks:
       - app-network
 

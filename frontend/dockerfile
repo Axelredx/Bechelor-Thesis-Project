@@ -1,21 +1,21 @@
-# Build stage
-FROM node:22 AS build
+# Usa Node.js 22
+FROM node:22
 
 WORKDIR /app
+
+# Copia package.json e installa dipendenze
 COPY package*.json ./
 RUN npm install
 
+# Copia il resto del frontend
 COPY . .
+
+# Build del frontend
 RUN npm run build
 
-# Serve stage
-FROM nginx:alpine
+# Serve con un server statico
+RUN npm install -g serve
 
-# Copia build Vue in nginx
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Espone la porta
 EXPOSE 80
 
-# Avvia nginx
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["serve", "-s", "dist", "-l", "80"]
