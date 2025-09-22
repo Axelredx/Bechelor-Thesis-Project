@@ -65,7 +65,6 @@ const fetchCategory = async () => {
     const { data } = await axios.get(`${apiUrl}/get-category`)
     isCategoryValid.value = !!data.category?.trim()
   } catch (err) {
-    console.error('Errore nel recupero della categoria:', err)
     isCategoryValid.value = false
   } finally {
     computePlaceholder()
@@ -77,7 +76,6 @@ const checkDocs = async () => {
     const { data } = await axios.get(`${apiUrl}/count-docs`)
     docsInDb.value = data.result > 0
   } catch (err) {
-    console.error('Errore nel recupero count dei documenti:', err)
     docsInDb.value = false
   } finally {
     computePlaceholder()
@@ -115,7 +113,6 @@ const downloadFile = async (fileId, filename) => {
     document.body.removeChild(link)
     window.URL.revokeObjectURL(url)
   } catch (error) {
-    console.error('Errore durante il download:', error)
     messages.push({
       id: messageIdCounter.value++,
       type: 'assistant',
@@ -166,7 +163,6 @@ const sendMessage = async () => {
       timestamp: new Date()
     })
   } catch (error) {
-    console.error('Errore API:', error)
     messages.push({
       id: messageIdCounter.value++,
       type: 'assistant',
