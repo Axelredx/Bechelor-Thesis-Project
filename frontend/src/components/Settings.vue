@@ -40,7 +40,6 @@ const fetchCurrentCategory = async () => {
   } catch (err) {
     currentCategory.value = ''
     currentDescription.value = ''
-    console.error(err)
   } finally {
     isFetchingCurrent.value = false
   }
@@ -55,13 +54,18 @@ const createCategory = async () => {
     const { data } = await axios.post(`${apiUrl}/create-category`, {
       text: categoryInput.value
     })
+    if (data.query === 'NO') {
+      showStatus(data.message, 'error')
+      categoryInput.value = ''
+      isLoading.value = false
+      return
+    }
     createdCategory.value = data.category
     fullDescription.value = data.description
     showStatus(data.message, 'success')
     categoryInput.value = ''
     await fetchCurrentCategory()
   } catch (err) {
-    console.error(err)
     showStatus(err.response?.data?.detail || 'Errore durante la creazione', 'error')
   } finally {
     isLoading.value = false
@@ -77,13 +81,18 @@ const updateCategory = async () => {
     const { data } = await axios.put(`${apiUrl}/update-category`, {
       text: categoryInput.value
     })
+    if (data.query === 'NO') {
+      showStatus(data.message, 'error')
+      categoryInput.value = ''
+      isLoading.value = false
+      return
+    }
     createdCategory.value = data.category
     fullDescription.value = data.description
     showStatus(data.message, 'success')
     categoryInput.value = ''
     await fetchCurrentCategory()
   } catch (err) {
-    console.error(err)
     showStatus(err.response?.data?.detail || "Errore durante l'aggiornamento", 'error')
   } finally {
     isLoading.value = false
@@ -102,7 +111,6 @@ const deleteAllCategories = async () => {
     fullDescription.value = ''
     await fetchCurrentCategory()
   } catch (err) {
-    console.error(err)
     showStatus(err.response?.data?.detail || "Errore durante la cancellazione", 'error')
   } finally {
     isLoading.value = false
@@ -117,10 +125,15 @@ const deleteDocuments = async () => {
 
   try {
     const { data } = await axios.delete(`${apiUrl}/delete-docs`, { data: { text: nlpInput.value } })
+    if (data.query === 'NO') {
+      showStatus(data.message, 'error')
+      nlpInput.value = ''
+      isLoading.value = false
+      return
+    }
     showStatus(data.message, 'success')
     nlpInput.value = ''
   } catch (err) {
-    console.error(err)
     showStatus(err.response?.data?.detail || "Errore durante l'eliminazione", 'error')
   } finally {
     isLoading.value = false
@@ -137,18 +150,15 @@ watchEffect(() => {
 
 <template>
   <div class="file-upload">
-        <!-- Categorie attuali -->
     <h1>Impostazioni</h1>
+
+    <!-- Current categories (in DB) -->
     <h3>Categorie attuali con le loro descrizioni:</h3>
     <div class="current-category" v-if="isFetchingCurrent">
       Recupero categorie in corso...
     </div>
     <div class="current-category" v-else>
       {{ currentDescription || 'Nessuna categoria ancora definita' }}
-    </div>
-
-    <div v-if="statusMessage" :class="['status', statusType]">
-      {{ statusMessage }}
     </div>
 
     <!-- Delete documents NLP -->
@@ -160,7 +170,12 @@ watchEffect(() => {
       </button>
     </div>
 
-    <!-- Creazione / aggiornamento categorie -->
+    <!-- Status message mid page to be visible -->
+    <div v-if="statusMessage" :class="['status', statusType]">
+      {{ statusMessage }}
+    </div>
+
+    <!-- Add/update category sect. -->
     <h3>Imposta Categorie e Descrizione dei documenti che vuoi riconoscere</h3>
     <textarea
       v-model="categoryInput"
