@@ -18,9 +18,12 @@ docker volume rm bechelor-thesis-project_mongo_data 2>/dev/null
 # Pulisce cache build Docker
 docker builder prune -af
 
+# Pulisce risorse Docker inutilizzate
 docker system prune -af
 docker volume prune -f
+
+# Rimuove eventuali container rimasti (se esistono)
 docker rm -f my_mongodb backend frontend
 
 
-echo "Pulizia completata. Puoi rilanciare ./start.sh"
+echo "Pulizia completata."
