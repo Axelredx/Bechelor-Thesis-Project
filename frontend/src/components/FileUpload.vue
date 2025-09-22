@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, computed, onMounted, watch, nextTick } from 'vue'
 import axios from 'axios'
 
 const selectedFile = ref(null)
@@ -11,6 +11,20 @@ const apiUrl = 'http://localhost:8000'
 
 const triggerFileInput = () => fileInput.value.click()
 const fileInput = ref(null)
+const isCategoryValid = ref(true)
+
+const isSendDisabled = computed(() => !isCategoryValid.value)
+
+const fetchCategory = async () => {
+  try {
+    const { data } = await axios.get(`${apiUrl}/get-category`)
+    isCategoryValid.value = !!data.category?.trim()
+  } catch (err) {
+    isCategoryValid.value = false
+  } finally {
+    computePlaceholder()
+  }
+}
 
 const handleFileSelect = (e) => {
   selectedFile.value = e.target.files[0] || null
@@ -52,6 +66,10 @@ const formatFileSize = (bytes) => {
   const i = Math.floor(Math.log(bytes)/Math.log(1024))
   return (bytes/Math.pow(1024,i)).toFixed(1) + ' ' + sizes[i]
 }
+
+onMounted(() => {
+  fetchCategory()
+})
 </script>
 
 <template>
@@ -71,7 +89,8 @@ const formatFileSize = (bytes) => {
     </div>
 
     <div class="actions">
-      <button @click="uploadFile" :disabled="!selectedFile || isUploading">Carica</button>
+      <p v-if="!isCategoryValid">Definisci una categoria valida per caricare il file in /settings.</p>
+      <button @click="uploadFile" :disabled="!selectedFile || isUploading || isSendDisabled">Carica</button>
       <button @click="selectedFile = null" :disabled="!selectedFile || isUploading">Cancella</button>
     </div>
 

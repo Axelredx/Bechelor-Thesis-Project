@@ -184,7 +184,7 @@ watchEffect(() => {
     ></textarea>
 
     <div class="action-buttons">
-      <button @click="createCategory" :disabled="isLoading || !categoryInput || currentCategory">
+      <button @click="createCategory" :disabled="isLoading || !categoryInput">
         {{ isLoading ? 'Inviando...' : 'Crea Categoria' }}
       </button>
       <button @click="updateCategory" :disabled="isLoading || !categoryInput || !currentCategory">
