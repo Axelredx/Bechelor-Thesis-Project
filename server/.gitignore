@@ -1,0 +1,30 @@
+# Virtual env
+AI_Type_preprocessor/myproject_env
+ai_document_classifier/myproject_env 
+/myproject_env
+
+# Python cache
+AI_Type_preprocessor/__pycache__
+utility/__pycache__
+analyzers/__pycache__
+ai_microservices/__pycache__
+__pycache__
+
+# others 
+.env
+/IN
+/OUT
+/DUMP/*
+/tmp_docs
+/tmp
+/AI_Type_preprocessor/DUMP
+
+# tests
+/AI_Type_preprocessor/simulate_get
+
+#logs
+/AI_Type_preprocessor/LOGFILE/
+/LOGFILE/*
+
+# todos
+TODO.txt
