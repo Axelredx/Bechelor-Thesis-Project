@@ -190,8 +190,6 @@ class ClaudeDocClassificator:
     def preprocess_file(self) -> str:
         # start timer estimation (benchmark uses)
         self.time_estimator.start_counting_time()
-        
-        list = []
 
         for item in self.path_DUMP.iterdir():
             if self.__is_file_considerable(item):
@@ -228,8 +226,6 @@ class ClaudeDocClassificator:
 
         # stop timer estimation (benchmark uses)
         self.time_estimator.estimate_total_time_and_op()
-        
-        return list
 
     ##########################
     # CLAUDE HANDLING TOOLS  #
