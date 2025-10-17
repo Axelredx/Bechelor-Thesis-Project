@@ -32,7 +32,7 @@ except Exception as e:
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:8080",  # frontend container
+        "http://localhost:8080",  # frontend container on Docker
         "http://localhost:5173",
         "http://localhost:3000"
     ],
