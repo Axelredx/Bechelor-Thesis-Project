@@ -23,4 +23,6 @@ class TimeEstimator:
         total_time = self.__stop_counting_time()
         if self.total_operations == 0:
             return
+        tmp_op = self.total_operations
         self.total_operations = 0
+        return total_time, total_time / tmp_op

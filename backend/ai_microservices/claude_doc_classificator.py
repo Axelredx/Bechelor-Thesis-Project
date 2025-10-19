@@ -225,7 +225,8 @@ class ClaudeDocClassificator:
 
 
         # stop timer estimation (benchmark uses)
-        self.time_estimator.estimate_total_time_and_op()
+        elapsed_time, avg_time_per_op = self.time_estimator.estimate_total_time_and_op()
+        self.logger.write_info_in_log_file(f"(at func: preprocess_file) Total elapsed time: {elapsed_time}, Average time per operation: {avg_time_per_op}")
 
     ##########################
     # CLAUDE HANDLING TOOLS  #
